@@ -67,10 +67,12 @@ static bool usb_device_cb_state_c(usb_cdc_control_signal_t state)
 {
 	if (state.rs232.DTR) {
 		/* Callbacks must be registered after endpoint allocation */
+#if 1 //microchip support failed fix when 0
 		cdcdf_acm_register_callback(CDCDF_ACM_CB_READ, (FUNC_PTR)usb_device_cb_bulk_out);
 		cdcdf_acm_register_callback(CDCDF_ACM_CB_WRITE, (FUNC_PTR)usb_device_cb_bulk_in);
 		/* Start Rx */
 		cdcdf_acm_read((uint8_t *)usbd_cdc_buffer, sizeof(usbd_cdc_buffer));
+#endif
 	}
 
 	/* No error. */
@@ -111,6 +113,9 @@ void cdcd_acm_example(void)
 	NVIC_SetPriority(USBHS_IRQn, 4); //MOTUS, do not exceed RTOS max, atmel smart default is 0
 
 	cdcdf_acm_register_callback(CDCDF_ACM_CB_STATE_C, (FUNC_PTR)usb_device_cb_state_c);
+//	cdcdf_acm_register_callback(CDCDF_ACM_CB_READ, (FUNC_PTR)usb_device_cb_bulk_out); //microchip support failed fix
+//	cdcdf_acm_register_callback(CDCDF_ACM_CB_WRITE, (FUNC_PTR)usb_device_cb_bulk_in); //microchip support failed fix
+//	cdcdf_acm_read((uint8_t *)usbd_cdc_buffer, sizeof(usbd_cdc_buffer)); //microchip support failed fix
 
 // 	while (1) {
 // 	}
